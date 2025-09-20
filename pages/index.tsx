@@ -1,19 +1,27 @@
-import Head from 'next/head'
+import React, { useState } from 'react';
+import Layout from '../components/layout/Layout';
+import PropertyCard from '../components/common/PropertyCard';
+import { PROPERTYLISTINGSAMPLE } from '../constants';
 
-export default function Home() {
+const Home: React.FC = () => {
+  const [properties, setProperties] = useState(PROPERTYLISTINGSAMPLE);
+
+  const handleSearch = (data: { location: string; checkIn: string; checkOut: string; guests: number }) => {
+    const filtered = PROPERTYLISTINGSAMPLE.filter((prop) =>
+      prop && prop.address.city.toLowerCase().includes(data.location.toLowerCase())
+    );
+    setProperties(filtered);
+  };
+
   return (
-    <div>
-     <Head>
-     <title>Alx Listing App</title>
-    </Head>
-    <div className="flex  justify-center items-center text-6xl h-screen 
-    
-     bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage: "url('/assets/alx.png')"
-      }}>
-     <div className="bg-black  font-extrabold  bg-gradient-to-r via-yellow-500 from-green-700 to-red-700 text-transparent bg-clip-text p-8 bg-black-500"><h1 className="">ALX Listing App</h1></div> 
-    </div>
-    </div>
+    <Layout onSearch={handleSearch}>
+      <div className="container mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {properties.map((property, index) => (
+          <PropertyCard key={index} property={property} />
+        ))}
+      </div>
+    </Layout>
   );
-}
+};
+
+export default Home;
